@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
+const userModel = require("../models/user.models");
 
+// user/test
 router.get("/register", (req, res) => {
   res.render("register");
 });
@@ -14,6 +16,7 @@ router.post(
 
   (req, res) => {
     const errors = validationResult(req);
+
     if (!errors.isEmpty()) {
       return res.status(400).json({
         errors: errors.array(),
@@ -21,7 +24,15 @@ router.post(
       });
     }
 
-    res.send(errors);
+    const { email, username, password } = req.body;
+
+    const newUser = userModel.create({
+      email,
+      username,
+      password,
+    });
+
+    res.json(newUser);
   }
 );
 
